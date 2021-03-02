@@ -1,7 +1,7 @@
 # Quickfix - Basebox for PHP7.2 Library now uses Debian "10" Buster, superceeding #libcurl3, stretch is most compatible at this time whilst devs workout backport.
 # https://github.com/docker-library/php/issues/865
 
-FROM php:7.2-apache-stretch
+FROM php:7.3-apache-stretch
 
 # Surpresses debconf complaints of trying to install apt packages interactively
 # https://github.com/moby/moby/issues/4032#issuecomment-192327844
@@ -10,6 +10,14 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -y update --fix-missing --no-install-recommends
 RUN apt-get -y upgrade
+RUN echo 'deb http://ftp.debian.org/debian stretch-backports main' >> /etc/apt/sources.list"
+RUN echo 'deb-src http://ftp.debian.org/debian stretch-backports main' >> /etc/apt/sources.list"
+RUN apt update
+RUN apt install -t stretch-backports -y
+RUN apt install -t stretch-backports linux-image-amd64 -y
+RUN apt -t stretch-backports upgrade
+RUN apt install python-certbot-apache -t stretch-backports
+RUN sudo certbot --apache -d your_domain -d www.your_domain
 
 # Install useful tools
 RUN apt-get -yq install apt-utils nano wget dialog
